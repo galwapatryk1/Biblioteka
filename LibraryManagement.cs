@@ -8,12 +8,12 @@ namespace Biblioteka
     {
         private static readonly List<Book> books = new();
 
-        public string BooksLocation { get; set; }
-        public IGenerate IdGenerator { get; set; }
-        public IGenerate FileGenerator { get; set; }
-        public IFileObjectsReader<List<Book>> BookListFileReader { get; set; }
-        public ICreator<Book> BookCreator { get; set; }
-        public Regex NumberRegex { get; set; }
+        private readonly string _booksLocation;
+        private readonly IGenerate _idGenerator;
+        private readonly IGenerate _fileGenerator;
+        private readonly IFileObjectsReader<List<Book>> _bookListFileReader;
+        private readonly ICreator<Book> _bookCreator;
+        private readonly Regex _numberRegex;
 
         public LibraryManagement(
             IGenerate idGenerator,
@@ -23,14 +23,14 @@ namespace Biblioteka
             string booksLocation,
             Regex numberRegex)
         {
-            this.FileGenerator = fileGenerator;
-            this.IdGenerator = idGenerator;
-            this.BookListFileReader = bookListFileReader;
-            this.BookCreator = bookCreator;
-            this.BooksLocation = booksLocation;
-            this.NumberRegex = numberRegex;
-            books.AddRange(BookListFileReader.Read());
-            FileGenerator.Generate(BooksLocation);
+            this._fileGenerator = fileGenerator;
+            this._idGenerator = idGenerator;
+            this._bookListFileReader = bookListFileReader;
+            this._bookCreator = bookCreator;
+            this._booksLocation = booksLocation;
+            this._numberRegex = numberRegex;
+            books.AddRange(_bookListFileReader.Read());
+            _fileGenerator.Generate(_booksLocation);
         }
 
         public void ShowBooks()
@@ -42,7 +42,7 @@ namespace Biblioteka
 
         public void CreateBook()
         {
-            Book? book = BookCreator.Create(IdGenerator.Generate());
+            Book? book = _bookCreator.Create(_idGenerator.Generate());
             if (book != null)
             {
                 books.Add(book);
@@ -57,7 +57,7 @@ namespace Biblioteka
             ShowBooks();
             Console.WriteLine("Wprowadź id książki do usunięcia.");
             string? idToRemove = Console.ReadLine();
-            while (idToRemove == null || !NumberRegex.IsMatch(idToRemove))
+            while (idToRemove == null || !_numberRegex.IsMatch(idToRemove))
             {
                 Console.WriteLine("Podana wartość nie jest wartością numeryczną!");
                 Console.WriteLine("Chcesz kontynuować? y/n");
@@ -138,8 +138,8 @@ namespace Biblioteka
         {
             string jsonString = JsonSerializer.Serialize(books);
 
-            File.WriteAllText(BooksLocation, String.Empty);
-            File.WriteAllText(BooksLocation, jsonString);
+            File.WriteAllText(_booksLocation, String.Empty);
+            File.WriteAllText(_booksLocation, jsonString);
         }
     }
 }

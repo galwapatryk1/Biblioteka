@@ -4,11 +4,11 @@ namespace Biblioteka
 {
     internal class IDFileReader : IFileObjectsReader<ID>
     {
-        public string FileName { get; set; }
+        private readonly string _fileName;
 
         public IDFileReader(string fileName)
         {
-            FileName = fileName;
+            this._fileName = fileName;
         }
 
         public ID Read()
@@ -16,7 +16,7 @@ namespace Biblioteka
             try
             {
                 ID? id;
-                using StreamReader sr = new(FileName);
+                using StreamReader sr = new(_fileName);
                 var file = sr.ReadToEnd();
                 if (file != null)
                 {

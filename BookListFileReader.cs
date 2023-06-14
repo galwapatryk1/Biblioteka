@@ -4,11 +4,11 @@ namespace Biblioteka
 {
     internal class BookListFileReader : IFileObjectsReader<List<Book>>
     {
-        public string FileName { get; set; }
+        private readonly string _fileName;
 
         public BookListFileReader(string fileName)
         {
-            FileName = fileName;
+            this._fileName = fileName;
         }
 
         public List<Book> Read()
@@ -16,7 +16,7 @@ namespace Biblioteka
             try
             {
                 List<Book> books = new();
-                using StreamReader sr = new(FileName);
+                using StreamReader sr = new(_fileName);
                 var file = sr.ReadToEnd();
                 if (file != null)
                 {

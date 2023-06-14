@@ -4,18 +4,19 @@ namespace Biblioteka
 {
     internal class IDGenerator : IGenerate
     {
-        private static readonly string idLocation = "C://DEV/ID.json";
-        public IGenerate fileGenerator { get; set; }
-        public IFileObjectsReader<ID> fileObjectsReader { get; set; }
+        private readonly IGenerate _fileGenerator;
+        private readonly IFileObjectsReader<ID> _fileObjectsReader;
+        private readonly string _fileName;
         
         private static ID? id;
 
-        public IDGenerator(IGenerate fileGenerator, IFileObjectsReader<ID> objectsReader)
+        public IDGenerator(IGenerate fileGenerator, IFileObjectsReader<ID> objectsReader, string filename)
         {
-            this.fileGenerator = fileGenerator;
-            this.fileObjectsReader = objectsReader;
-            fileGenerator.Generate(idLocation);
-            id = objectsReader.Read();
+            this._fileGenerator = fileGenerator;
+            this._fileObjectsReader = objectsReader;
+            this._fileName = filename;
+            _fileGenerator.Generate(_fileName);
+            id = _fileObjectsReader.Read();
         }
 
         public int Generate()
@@ -32,8 +33,8 @@ namespace Biblioteka
         {
             string jsonString = JsonSerializer.Serialize(id);
 
-            File.WriteAllText(idLocation, String.Empty);
-            File.WriteAllText(idLocation, jsonString);
+            File.WriteAllText(_fileName, String.Empty);
+            File.WriteAllText(_fileName, jsonString);
         }
 
         public void Generate(string name)

@@ -11,8 +11,8 @@ namespace Biblioteka
         private static readonly Regex descriptionRegex = new("^.+$");
         private static readonly Regex menuRegex = new("^[1-6]$");
 
-        public Menu Menu { get; set; }
-        public LibraryManagement LibraryManagement { get; set; }
+        private readonly Menu _menu;
+        private readonly LibraryManagement _libraryManagement;
 
         public Library()
         {
@@ -20,14 +20,14 @@ namespace Biblioteka
             IFileObjectsReader<ID> idFileObjectsReader = new IDFileReader(idLocation);
             ICreator<Book> bookCreator = new BookCreator(numberRegex, nameRegex, descriptionRegex);
             IGenerate fileGenerator = new FileGenerator();
-            IGenerate idGenerator = new IDGenerator(fileGenerator, idFileObjectsReader);
-            this.Menu = new Menu(menuRegex);
-            this.LibraryManagement = new LibraryManagement(idGenerator, fileGenerator, bookListFileReader, bookCreator, booksLocation, numberRegex);
+            IGenerate idGenerator = new IDGenerator(fileGenerator, idFileObjectsReader, idLocation);
+            this._menu = new Menu(menuRegex);
+            this._libraryManagement = new LibraryManagement(idGenerator, fileGenerator, bookListFileReader, bookCreator, booksLocation, numberRegex);
         }
 
         public void Start()
         {
-            int value = Menu.PrintMenu();
+            int value = _menu.PrintMenu();
             ProcessMenuInput(value);
         }
 
@@ -37,23 +37,23 @@ namespace Biblioteka
             switch (key)
             {
                 case 1:
-                    ProcessMenuInput(Menu.PrintMenu());
+                    ProcessMenuInput(_menu.PrintMenu());
                     break;
                 case 2:
-                    LibraryManagement.ShowBooks();
-                    ProcessMenuInput(Menu.PrintMenu());
+                    _libraryManagement.ShowBooks();
+                    ProcessMenuInput(_menu.PrintMenu());
                     break;
                 case 3:
-                    LibraryManagement.CreateBook();
-                    ProcessMenuInput(Menu.PrintMenu());
+                    _libraryManagement.CreateBook();
+                    ProcessMenuInput(_menu.PrintMenu());
                     break;
                 case 4:
-                    LibraryManagement.RemoveBook();
-                    ProcessMenuInput(Menu.PrintMenu());
+                    _libraryManagement.RemoveBook();
+                    ProcessMenuInput(_menu.PrintMenu());
                     break;
                 case 5:
-                    LibraryManagement.ShowFilteredBooks();
-                    ProcessMenuInput(Menu.PrintMenu());
+                    _libraryManagement.ShowFilteredBooks();
+                    ProcessMenuInput(_menu.PrintMenu());
                     break;
                 case 6:
                     Console.WriteLine("Do zobaczenia wkrótce!");

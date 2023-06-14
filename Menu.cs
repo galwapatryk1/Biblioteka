@@ -11,11 +11,11 @@ namespace Biblioteka
 5. Szukaj książkę
 6. Wyjście";
 
-        public Regex MenuRegex { get; set; }
+        private readonly Regex _menuRegex;
 
         public Menu(Regex menuRegex)
         {
-            this.MenuRegex = menuRegex;
+            this._menuRegex = menuRegex;
         }
 
         public int PrintMenu()
@@ -28,7 +28,7 @@ namespace Biblioteka
         public string HandleInput()
         {
             string? value = Console.ReadLine();
-            while (value == null || !MenuRegex.IsMatch(value))
+            while (value == null || !_menuRegex.IsMatch(value))
             {
                 Console.WriteLine("Wprowadzona opcja jest pusta bądź o błędnej wartości!");
                 value = Console.ReadLine();
